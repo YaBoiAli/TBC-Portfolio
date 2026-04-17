@@ -21,7 +21,7 @@ export function ResumeFinale() {
         className="relative overflow-hidden rounded-sm border border-white/[0.12] bg-gradient-to-b from-graphite/95 via-tunnel to-void px-6 py-14 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset,0_40px_120px_rgba(0,0,0,0.75)] sm:px-12 sm:py-16"
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/35 to-transparent" />
-        <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-[120%] -translate-x-1/2 bg-gradient-to-b from-white/[0.06] to-transparent blur-3xl" />
+        <div className="pointer-events-none absolute left-1/2 top-0 hidden h-40 w-[120%] -translate-x-1/2 bg-gradient-to-b from-white/[0.06] to-transparent blur-3xl md:block" />
 
         <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-muted">
           Final destination

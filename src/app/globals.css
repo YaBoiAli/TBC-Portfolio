@@ -11,6 +11,13 @@ html {
   scroll-behavior: smooth;
 }
 
+/* iOS / touch: smooth scroll + heavy overlays often fight WebKit; keep native scrolling. */
+@media (hover: none) and (pointer: coarse) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   @apply bg-void text-bone antialiased;
 }
@@ -40,6 +47,12 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+@media (max-width: 768px) {
+  .grain::after {
+    display: none;
+  }
+}
+
 /* Tunnel 3D stage */
 .tunnel-stage {
   perspective: 900px;
@@ -54,4 +67,13 @@ body {
 .tunnel-ring {
   transform-style: preserve-3d;
   backface-visibility: hidden;
+}
+
+/* Lighter 3D stack for phones — less perspective + no promoted layers on the whole track */
+.tunnel-stage--lite {
+  perspective: 520px;
+}
+
+.tunnel-stage--lite .tunnel-track {
+  will-change: auto;
 }

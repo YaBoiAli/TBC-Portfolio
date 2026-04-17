@@ -3,6 +3,7 @@
 import { useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isTunnelLiteDevice } from "@/lib/mobileTunnel";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,6 +27,8 @@ export type TunnelScrollBindings = {
  * 4. `parallaxRef` moves at a fraction of the main Z for parallax fog.
  * 5. Rim lights stay fixed opacity (no scroll-driven brightening — avoids a “breathing” highlight).
  * 6. If `prefers-reduced-motion` is on, we skip transforms entirely.
+ * 7. On iPhone / narrow viewports we skip ScrollTrigger + Z scrub — avoids WebKit crashes and
+ *    broken scroll (GPU/memory pressure from body-linked 3D animation).
  */
 export function useTunnelScroll({
   trackRef,
@@ -39,6 +42,15 @@ export function useTunnelScroll({
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mq.matches) {
       gsap.set(track, { clearProps: "transform" });
+      return;
+    }
+
+    if (isTunnelLiteDevice()) {
+      const parallax = parallaxRef?.current;
+      const lights = lightsRef?.current;
+      gsap.set(track, { z: -900, force3D: true });
+      if (parallax) gsap.set(parallax, { z: -300, force3D: true });
+      if (lights) gsap.set(lights, { opacity: 0.18 });
       return;
     }
 

@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useReducedMotion } from "framer-motion";
+import { isTunnelLiteDevice } from "@/lib/mobileTunnel";
 
-const RING_COUNT = 26;
+const RING_COUNT_FULL = 26;
+const RING_COUNT_LITE = 9;
 const RING_STEP = 165;
 
 type TunnelBackdropProps = {
@@ -23,22 +25,30 @@ export function TunnelBackdrop({
 }: TunnelBackdropProps) {
   const reduceMotion = useReducedMotion();
   const [mounted, setMounted] = useState(false);
+  const [lite, setLite] = useState(false);
+
+  useLayoutEffect(() => {
+    setLite(isTunnelLiteDevice());
+  }, []);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const ringCount = lite ? RING_COUNT_LITE : RING_COUNT_FULL;
+
   const rings = useMemo(
     () =>
-      Array.from({ length: RING_COUNT }, (_, i) => ({
+      Array.from({ length: ringCount }, (_, i) => ({
         key: i,
         z: -i * RING_STEP,
-        scale: 0.72 + i * 0.028,
+        scale: 0.72 + i * (lite ? 0.055 : 0.028),
       })),
-    [],
+    [lite, ringCount],
   );
 
   const particles = useMemo(() => {
+    if (lite) return [];
     const count = 28;
     return Array.from({ length: count }, (_, i) => ({
       key: i,
@@ -47,16 +57,18 @@ export function TunnelBackdrop({
       delay: (i % 7) * 0.4,
       size: 1 + (i % 3),
     }));
-  }, []);
+  }, [lite]);
 
-  const showParticles = mounted && reduceMotion !== true;
+  const showParticles = mounted && reduceMotion !== true && !lite;
 
   return (
     <div
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-void"
       aria-hidden
     >
-      <div className="tunnel-stage absolute inset-0">
+      <div
+        className={`tunnel-stage absolute inset-0 ${lite ? "tunnel-stage--lite" : ""}`}
+      >
         <div className="absolute inset-0 bg-tunnel-vignette bg-center" />
         <div className="absolute inset-0 bg-radial-fog opacity-50" />
 
@@ -101,7 +113,8 @@ export function TunnelBackdrop({
           ))}
         </div>
 
-        {/* Static rail corridor: steel runners + sleepers (not on the moving track — no “breathing” glow). */}
+        {/* Rails omitted on lite tunnel — extra 3D layer cost on iOS WebKit */}
+        {!lite && (
         <div
           className="pointer-events-none absolute inset-0 z-[1] flex items-end justify-center pb-[6vh] sm:pb-[8vh]"
           aria-hidden
@@ -124,6 +137,7 @@ export function TunnelBackdrop({
             <div className="absolute bottom-0 right-[9%] top-0 w-[3px] rounded-sm bg-gradient-to-b from-white/[0.08] via-steel to-black shadow-[inset_-1px_0_0_rgba(255,255,255,0.04)]" />
           </div>
         </div>
+        )}
 
         <div
           ref={lightsRef}

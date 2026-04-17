@@ -38,7 +38,7 @@ export function StationShell({
           delay: reduce ? 0 : 0.05 * index,
           ease: [0.22, 1, 0.36, 1],
         }}
-        className="relative overflow-hidden rounded-sm border border-white/[0.08] bg-graphite/40 p-[1px] shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset,0_24px_80px_rgba(0,0,0,0.65)] backdrop-blur-md"
+        className="relative overflow-hidden rounded-sm border border-white/[0.08] bg-graphite/95 p-[1px] shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset,0_24px_80px_rgba(0,0,0,0.65)] md:bg-graphite/40 md:backdrop-blur-md"
       >
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.07] via-transparent to-transparent" />
         <div className="pointer-events-none absolute left-6 top-0 h-px w-24 bg-gradient-to-r from-white/50 to-transparent" />
