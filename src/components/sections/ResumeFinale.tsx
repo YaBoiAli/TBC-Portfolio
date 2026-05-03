@@ -8,23 +8,26 @@ import { siteContent } from "@/data/siteContent";
 
 export function ResumeFinale() {
   const reduce = useReducedMotion();
-  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(
-    { amount: 0.12, margin: "0px 0px 18% 0px" },
-    reduce,
-  );
+  const { ref, latched } = useRevealWhenInView<HTMLElement>(undefined, reduce);
 
   return (
     <section
+      ref={ref}
       id="resume"
       className="relative z-10 mx-auto max-w-6xl px-5 py-32 sm:px-8 lg:px-12"
     >
       <motion.div
-        ref={ref}
-        initial={reduce ? false : { opacity: 0, y: 28 }}
+        initial={reduce ? false : { opacity: 0, y: 48, scale: 0.97 }}
         animate={
-          reduce === true || latched ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }
+          reduce === true || latched
+            ? { opacity: 1, y: 0, scale: 1 }
+            : { opacity: 0, y: 48, scale: 0.97 }
         }
-        transition={{ duration: reduce ? 0 : 0.9, ease: [0.22, 1, 0.36, 1] }}
+        transition={
+          reduce
+            ? { duration: 0 }
+            : { type: "spring", stiffness: 64, damping: 20, mass: 0.95, bounce: 0 }
+        }
         className="relative overflow-hidden rounded-sm border border-white/[0.12] bg-gradient-to-b from-graphite/95 via-tunnel to-void px-6 py-14 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset,0_40px_120px_rgba(0,0,0,0.75)] sm:px-12 sm:py-16"
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/35 to-transparent" />

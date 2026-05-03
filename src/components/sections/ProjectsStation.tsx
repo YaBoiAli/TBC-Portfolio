@@ -18,23 +18,29 @@ function ProjectArticle({
   i: number;
   reduce: boolean | null;
 }) {
-  const { ref, latched } = useRevealWhenInView<HTMLElement>(
-    { amount: 0.12, margin: "0px 0px 14% 0px" },
-    reduce,
-  );
+  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(undefined, reduce);
 
   return (
-    <motion.article
-      ref={ref}
-      initial={reduce ? false : { opacity: 0, y: 22 }}
+    <div ref={ref} className="min-w-0">
+      <motion.article
+      initial={reduce ? false : { opacity: 0, y: 40, scale: 0.96 }}
       animate={
-        reduce === true || latched ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }
+        reduce === true || latched
+          ? { opacity: 1, y: 0, scale: 1 }
+          : { opacity: 0, y: 40, scale: 0.96 }
       }
-      transition={{
-        duration: reduce ? 0 : 0.65,
-        delay: reduce ? 0 : 0.06 * i,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      transition={
+        reduce
+          ? { duration: 0 }
+          : {
+              type: "spring",
+              stiffness: 78,
+              damping: 22,
+              mass: 0.85,
+              bounce: 0,
+              delay: 0.07 * i,
+            }
+      }
       className="group relative overflow-hidden border border-white/[0.07] bg-graphite/50"
     >
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.05] via-transparent to-transparent opacity-60 transition-opacity group-hover:opacity-100" />
@@ -85,6 +91,7 @@ function ProjectArticle({
         layout
       />
     </motion.article>
+    </div>
   );
 }
 

@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TunnelBackdrop } from "@/components/tunnel/TunnelBackdrop";
 import { useTunnelScroll } from "@/components/tunnel/useTunnelScroll";
+import { useTunnelLiteSync } from "@/hooks/useTunnelLiteSync";
 import { TunnelTransit } from "@/components/tunnel/TunnelTransit";
 import { NavProgress } from "@/components/nav/NavProgress";
 import { HeroEntrance } from "@/components/sections/HeroEntrance";
@@ -21,8 +22,9 @@ export function TunnelExperience() {
   const trackRef = useRef<HTMLDivElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
   const lightsRef = useRef<HTMLDivElement>(null);
+  const tunnelLite = useTunnelLiteSync();
 
-  useTunnelScroll({ trackRef, parallaxRef, lightsRef });
+  useTunnelScroll({ trackRef, parallaxRef, lightsRef, tunnelLite });
 
   useLayoutEffect(() => {
     const id = requestAnimationFrame(() => ScrollTrigger.refresh());
@@ -36,9 +38,14 @@ export function TunnelExperience() {
 
   return (
     <>
-      <TunnelBackdrop trackRef={trackRef} parallaxRef={parallaxRef} lightsRef={lightsRef} />
+      <TunnelBackdrop
+        trackRef={trackRef}
+        parallaxRef={parallaxRef}
+        lightsRef={lightsRef}
+        tunnelLite={tunnelLite}
+      />
       <NavProgress />
-      <main className="relative">
+      <main className="relative z-[15] isolate">
         <HeroEntrance />
         <TunnelTransit sector="Transit" label="Advancing through reinforced bore" />
         <AboutStation />

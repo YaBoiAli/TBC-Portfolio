@@ -22,23 +22,22 @@ function AccentCard({
   reduce: boolean | null;
 }) {
   const Icon = item.icon;
-  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(
-    { amount: 0.12, margin: "0px 0px 14% 0px" },
-    reduce,
-  );
+  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(undefined, reduce);
 
   return (
-    <motion.div
-      ref={ref}
-      initial={reduce ? false : { opacity: 0, y: 16 }}
+    <div ref={ref} className="min-w-0">
+      <motion.div
+      initial={reduce ? false : { opacity: 0, y: 36, scale: 0.97 }}
       animate={
-        reduce === true || latched ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
+        reduce === true || latched
+          ? { opacity: 1, y: 0, scale: 1 }
+          : { opacity: 0, y: 36, scale: 0.97 }
       }
-      transition={{
-        duration: reduce ? 0 : 0.55,
-        delay: reduce ? 0 : 0.08 * i,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      transition={
+        reduce
+          ? { duration: 0 }
+          : { type: "spring", stiffness: 74, damping: 21, bounce: 0, delay: 0.09 * i }
+      }
       className="group relative flex gap-4 border border-white/[0.06] bg-steel/25 px-4 py-4"
     >
       <motion.div
@@ -66,17 +65,18 @@ function AccentCard({
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
     </motion.div>
+    </div>
   );
 }
 
 export function WhyBoringStation() {
   const reduce = useReducedMotion();
-  const { ref: titleRef, latched: titleLatched } = useRevealWhenInView<HTMLHeadingElement>(
-    { amount: 0.12, margin: "0px 0px 18% 0px" },
+  const { ref: titleRef, latched: titleLatched } = useRevealWhenInView<HTMLDivElement>(
+    undefined,
     reduce,
   );
-  const { ref: bodyRef, latched: bodyLatched } = useRevealWhenInView<HTMLParagraphElement>(
-    { amount: 0.12, margin: "0px 0px 18% 0px" },
+  const { ref: bodyRef, latched: bodyLatched } = useRevealWhenInView<HTMLDivElement>(
+    undefined,
     reduce,
   );
 
@@ -84,32 +84,42 @@ export function WhyBoringStation() {
     <StationShell id="why" eyebrow="Station 02" title={siteContent.whyBoring.title} index={1}>
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <div>
+          <div ref={titleRef} className="min-w-0">
           <motion.h3
-            ref={titleRef}
             className="font-display text-2xl leading-snug text-bone sm:text-3xl"
-            initial={reduce ? false : { opacity: 0, x: -16 }}
+            initial={reduce ? false : { opacity: 0, x: -28 }}
             animate={
               reduce === true || titleLatched
                 ? { opacity: 1, x: 0 }
-                : { opacity: 0, x: -16 }
+                : { opacity: 0, x: -28 }
             }
-            transition={{ duration: reduce ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={
+              reduce
+                ? { duration: 0 }
+                : { type: "spring", stiffness: 70, damping: 22, bounce: 0 }
+            }
           >
             {siteContent.whyBoring.headline}
           </motion.h3>
+          </div>
+          <div ref={bodyRef} className="min-w-0">
           <motion.p
-            ref={bodyRef}
             className="mt-6 max-w-prose text-pretty text-accent"
-            initial={reduce ? false : { opacity: 0, y: 14 }}
+            initial={reduce ? false : { opacity: 0, y: 28 }}
             animate={
               reduce === true || bodyLatched
                 ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: 14 }
+                : { opacity: 0, y: 28 }
             }
-            transition={{ duration: reduce ? 0 : 0.75, delay: reduce ? 0 : 0.12 }}
+            transition={
+              reduce
+                ? { duration: 0 }
+                : { type: "spring", stiffness: 68, damping: 22, bounce: 0, delay: 0.08 }
+            }
           >
             {siteContent.whyBoring.body}
           </motion.p>
+          </div>
         </div>
 
         <div className="space-y-4">

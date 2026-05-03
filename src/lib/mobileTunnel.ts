@@ -1,4 +1,4 @@
-/** Narrow phones / touch Safari — heavy 3D + ScrollTrigger often crashes or freezes scroll. */
+/** Narrow viewports — heavy 3D + ScrollTrigger often crashes or freezes mobile Safari scroll. */
 export const MOBILE_TUNNEL_MQ = "(max-width: 768px)";
 
 export function isTunnelLiteDevice(): boolean {

@@ -20,24 +20,27 @@ function ExperienceArticle({
   reduce: boolean | null;
   bordered: boolean;
 }) {
-  const { ref, latched } = useRevealWhenInView<HTMLElement>(
-    { amount: 0.12, margin: "0px 0px 14% 0px" },
-    reduce,
-  );
+  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(undefined, reduce);
 
   return (
-    <motion.article
-      ref={ref}
-      initial={reduce ? false : { opacity: 0, x: -12 }}
+    <div ref={ref} className={`relative min-w-0 ${bordered ? "mt-10 border-t border-white/[0.06] pt-10" : ""}`}>
+      <motion.article
+      initial={reduce ? false : { opacity: 0, x: -28 }}
       animate={
-        reduce === true || latched ? { opacity: 1, x: 0 } : { opacity: 0, x: -12 }
+        reduce === true || latched ? { opacity: 1, x: 0 } : { opacity: 0, x: -28 }
       }
-      transition={{
-        duration: reduce ? 0 : 0.55,
-        delay: reduce ? 0 : 0.06 * (sIdx * 2 + i),
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className={`relative ${bordered ? "mt-10 border-t border-white/[0.06] pt-10" : ""}`}
+      transition={
+        reduce
+          ? { duration: 0 }
+          : {
+              type: "spring",
+              stiffness: 80,
+              damping: 21,
+              bounce: 0,
+              delay: 0.05 * (sIdx * 2 + i),
+            }
+      }
+      className="relative"
     >
       <span
         className="absolute -left-[25px] top-2 h-2 w-2 -translate-x-1/2 rounded-full border border-white/25 bg-graphite sm:-left-[41px]"
@@ -61,6 +64,7 @@ function ExperienceArticle({
         ))}
       </ul>
     </motion.article>
+    </div>
   );
 }
 

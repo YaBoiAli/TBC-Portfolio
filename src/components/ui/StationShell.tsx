@@ -24,28 +24,34 @@ export function StationShell({
   index = 0,
 }: StationShellProps) {
   const reduce = useReducedMotion();
-  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(
-    { amount: 0.12, margin: "0px 0px 12% 0px" },
-    reduce,
-  );
+  const { ref, latched } = useRevealWhenInView<HTMLElement>(undefined, reduce);
 
   return (
     <section
+      ref={ref}
       id={id}
       className="relative z-10 mx-auto flex min-h-[min(100vh,880px)] max-w-6xl flex-col justify-center px-5 py-28 sm:px-8 lg:px-12"
     >
       <motion.div
-        ref={ref}
-        initial={reduce ? false : { opacity: 0, y: 36 }}
+        initial={reduce ? false : { opacity: 0, y: 52, scale: 0.97 }}
         animate={
-          reduce === true || latched ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 }
+          reduce === true || latched
+            ? { opacity: 1, y: 0, scale: 1 }
+            : { opacity: 0, y: 52, scale: 0.97 }
         }
-        transition={{
-          duration: reduce ? 0 : 0.85,
-          delay: reduce ? 0 : 0.05 * index,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-        className="relative overflow-hidden rounded-sm border border-white/[0.08] bg-graphite/95 p-[1px] shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset,0_24px_80px_rgba(0,0,0,0.65)] md:bg-graphite/40 md:backdrop-blur-md"
+        transition={
+          reduce
+            ? { duration: 0 }
+            : {
+                type: "spring",
+                stiffness: 72,
+                damping: 20,
+                mass: 0.9,
+                bounce: 0,
+                delay: 0.06 * index,
+              }
+        }
+        className="relative overflow-hidden rounded-sm border border-white/[0.08] bg-graphite/95 p-[1px] shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset,0_24px_80px_rgba(0,0,0,0.65)] md:bg-graphite/40 md:backdrop-blur-md [@media(min-aspect-ratio:21/9)]:bg-graphite/95 [@media(min-aspect-ratio:21/9)]:backdrop-blur-none [@media(min-width:4200px)]:bg-graphite/95 [@media(min-width:4200px)]:backdrop-blur-none"
       >
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.07] via-transparent to-transparent" />
         <div className="pointer-events-none absolute left-6 top-0 h-px w-24 bg-gradient-to-r from-white/50 to-transparent" />

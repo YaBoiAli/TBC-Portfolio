@@ -17,20 +17,21 @@ function SkillMetricRow({
   i: number;
   reduce: boolean | null;
 }) {
-  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(
-    { amount: 0.12, margin: "0px 0px 16% 0px" },
-    reduce,
-  );
+  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(undefined, reduce);
 
   return (
-    <motion.div
-      ref={ref}
+    <div ref={ref} className="min-w-0">
+      <motion.div
       className="flex items-center gap-3"
-      initial={reduce ? false : { opacity: 0, x: -10 }}
+      initial={reduce ? false : { opacity: 0, x: -22 }}
       animate={
-        reduce === true || latched ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }
+        reduce === true || latched ? { opacity: 1, x: 0 } : { opacity: 0, x: -22 }
       }
-      transition={{ delay: reduce ? 0 : 0.05 * i, duration: 0.45 }}
+      transition={
+        reduce
+          ? { duration: 0 }
+          : { type: "spring", stiffness: 85, damping: 22, bounce: 0, delay: 0.06 * i }
+      }
     >
       <Activity className="h-3.5 w-3.5 text-bone/60" strokeWidth={1.25} />
       <div className="h-px flex-1 bg-gradient-to-r from-white/25 via-white/10 to-transparent" />
@@ -38,6 +39,7 @@ function SkillMetricRow({
         {label}
       </span>
     </motion.div>
+    </div>
   );
 }
 
@@ -50,19 +52,22 @@ function SkillGroupCard({
   i: number;
   reduce: boolean | null;
 }) {
-  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(
-    { amount: 0.12, margin: "0px 0px 14% 0px" },
-    reduce,
-  );
+  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(undefined, reduce);
 
   return (
-    <motion.div
-      ref={ref}
-      initial={reduce ? false : { opacity: 0, y: 18 }}
+    <div ref={ref} className="min-w-0">
+      <motion.div
+      initial={reduce ? false : { opacity: 0, y: 32, scale: 0.96 }}
       animate={
-        reduce === true || latched ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
+        reduce === true || latched
+          ? { opacity: 1, y: 0, scale: 1 }
+          : { opacity: 0, y: 32, scale: 0.96 }
       }
-      transition={{ duration: 0.55, delay: reduce ? 0 : 0.07 * i }}
+      transition={
+        reduce
+          ? { duration: 0 }
+          : { type: "spring", stiffness: 76, damping: 21, bounce: 0, delay: 0.08 * i }
+      }
       className="border border-white/[0.07] bg-graphite/45 p-5"
     >
       <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
@@ -77,6 +82,7 @@ function SkillGroupCard({
         ))}
       </ul>
     </motion.div>
+    </div>
   );
 }
 

@@ -3,7 +3,6 @@
 import { useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { isTunnelLiteDevice } from "@/lib/mobileTunnel";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +13,8 @@ export type TunnelScrollBindings = {
   parallaxRef?: React.RefObject<HTMLElement>;
   /** Subtle edge lines (fixed opacity; not scrubbed with scroll) */
   lightsRef?: React.RefObject<HTMLElement>;
+  /** From viewport sync — must update GSAP when crossing mobile breakpoint */
+  tunnelLite: boolean;
 };
 
 /**
@@ -34,6 +35,7 @@ export function useTunnelScroll({
   trackRef,
   parallaxRef,
   lightsRef,
+  tunnelLite,
 }: TunnelScrollBindings) {
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -45,24 +47,29 @@ export function useTunnelScroll({
       return;
     }
 
-    if (isTunnelLiteDevice()) {
+    if (tunnelLite) {
       const parallax = parallaxRef?.current;
       const lights = lightsRef?.current;
-      gsap.set(track, { z: -900, force3D: true });
-      if (parallax) gsap.set(parallax, { z: -300, force3D: true });
-      if (lights) gsap.set(lights, { opacity: 0.18 });
-      return;
+      gsap.set(track, { z: -1200, force3D: true });
+      if (parallax) gsap.set(parallax, { z: -420, force3D: true });
+      if (lights) gsap.set(lights, { opacity: 0.26 });
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+      return () => {
+        gsap.set(track, { clearProps: "transform" });
+        if (parallax) gsap.set(parallax, { clearProps: "transform" });
+        ScrollTrigger.refresh();
+      };
     }
 
     const parallax = parallaxRef?.current;
     const lights = lightsRef?.current;
 
     const ctx = gsap.context(() => {
-      const depth = -4400;
+      const depth = -5600;
 
       gsap.set(track, { z: 0, force3D: true });
       if (parallax) gsap.set(parallax, { z: 0, force3D: true });
-      if (lights) gsap.set(lights, { opacity: 0.22 });
+      if (lights) gsap.set(lights, { opacity: 0.28 });
 
       const tl = gsap.timeline({
         defaults: { ease: "none" },
@@ -77,12 +84,15 @@ export function useTunnelScroll({
 
       tl.to(track, { z: depth, duration: 1 }, 0);
       if (parallax) {
-        tl.to(parallax, { z: depth * 0.34, duration: 1 }, 0);
+        tl.to(parallax, { z: depth * 0.36, duration: 1 }, 0);
       }
     }, track);
 
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+
     return () => {
       ctx.revert();
+      ScrollTrigger.refresh();
     };
-  }, [lightsRef, parallaxRef, trackRef]);
+  }, [lightsRef, parallaxRef, trackRef, tunnelLite]);
 }

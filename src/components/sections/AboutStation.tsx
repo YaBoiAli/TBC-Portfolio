@@ -8,10 +8,7 @@ import { useRevealWhenInView } from "@/hooks/useRevealWhenInView";
 export function AboutStation() {
   const reduce = useReducedMotion();
   const words = siteContent.about.headline.split(" ");
-  const { ref: headlineRef, latched } = useRevealWhenInView<HTMLHeadingElement>(
-    { amount: 0.12, margin: "0px 0px 18% 0px" },
-    reduce,
-  );
+  const { ref: headlineRef, latched } = useRevealWhenInView<HTMLDivElement>(undefined, reduce);
 
   return (
     <StationShell
@@ -25,8 +22,8 @@ export function AboutStation() {
           <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-muted">
             Identity
           </p>
+          <div ref={headlineRef} className="min-w-0">
           <motion.h3
-            ref={headlineRef}
             className="mt-4 font-display text-2xl text-bone sm:text-3xl"
             initial="hidden"
             animate={reduce === true || latched ? "show" : "hidden"}
@@ -41,11 +38,11 @@ export function AboutStation() {
               <motion.span
                 key={`${w}-${i}`}
                 variants={{
-                  hidden: { opacity: 0, y: 8 },
+                  hidden: { opacity: 0, y: 16 },
                   show: {
                     opacity: 1,
                     y: 0,
-                    transition: { duration: reduce ? 0 : 0.45, ease: [0.22, 1, 0.36, 1] },
+                    transition: { duration: reduce ? 0 : 0.5, ease: [0.18, 1, 0.32, 1] },
                   },
                 }}
                 className="mr-[0.35em] inline-block"
@@ -54,6 +51,7 @@ export function AboutStation() {
               </motion.span>
             ))}
           </motion.h3>
+          </div>
           <p className="mt-6 max-w-prose text-pretty text-accent">{siteContent.about.body}</p>
         </div>
         <div className="relative border border-white/[0.06] bg-steel/30 p-6 font-mono text-[11px] text-muted">
