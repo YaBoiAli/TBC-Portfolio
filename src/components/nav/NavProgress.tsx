@@ -34,7 +34,7 @@ export function NavProgress() {
           href="#"
           className="shrink-0 font-display text-xs tracking-[0.18em] text-bone/90 transition hover:text-bone"
         >
-          TB
+          TBC
           <span className="text-muted"> / PORTFOLIO</span>
         </Link>
         <div className="-mx-1 flex gap-4 overflow-x-auto pb-1 font-mono text-[9px] uppercase tracking-[0.22em] text-muted sm:mx-0 sm:overflow-visible sm:pb-0 sm:gap-6">

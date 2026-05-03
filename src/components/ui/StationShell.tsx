@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
+import { useRevealWhenInView } from "@/hooks/useRevealWhenInView";
 
 type StationShellProps = {
   id: string;
@@ -23,6 +24,10 @@ export function StationShell({
   index = 0,
 }: StationShellProps) {
   const reduce = useReducedMotion();
+  const { ref, latched } = useRevealWhenInView<HTMLDivElement>(
+    { amount: 0.12, margin: "0px 0px 12% 0px" },
+    reduce,
+  );
 
   return (
     <section
@@ -30,9 +35,11 @@ export function StationShell({
       className="relative z-10 mx-auto flex min-h-[min(100vh,880px)] max-w-6xl flex-col justify-center px-5 py-28 sm:px-8 lg:px-12"
     >
       <motion.div
+        ref={ref}
         initial={reduce ? false : { opacity: 0, y: 36 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.08, margin: "0px 0px 10% 0px" }}
+        animate={
+          reduce === true || latched ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 }
+        }
         transition={{
           duration: reduce ? 0 : 0.85,
           delay: reduce ? 0 : 0.05 * index,

@@ -1,12 +1,17 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { siteContent } from "@/data/siteContent";
 import { StationShell } from "@/components/ui/StationShell";
+import { siteContent } from "@/data/siteContent";
+import { useRevealWhenInView } from "@/hooks/useRevealWhenInView";
 
 export function AboutStation() {
   const reduce = useReducedMotion();
   const words = siteContent.about.headline.split(" ");
+  const { ref: headlineRef, latched } = useRevealWhenInView<HTMLHeadingElement>(
+    { amount: 0.12, margin: "0px 0px 18% 0px" },
+    reduce,
+  );
 
   return (
     <StationShell
@@ -21,10 +26,10 @@ export function AboutStation() {
             Identity
           </p>
           <motion.h3
+            ref={headlineRef}
             className="mt-4 font-display text-2xl text-bone sm:text-3xl"
             initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.02, margin: "0px 0px 25% 0px" }}
+            animate={reduce === true || latched ? "show" : "hidden"}
             variants={{
               hidden: {},
               show: {
